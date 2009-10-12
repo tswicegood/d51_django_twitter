@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.admin',
+    'd51_django_twitter',
 )
 
 TEMPLATE_LOADERS = (
