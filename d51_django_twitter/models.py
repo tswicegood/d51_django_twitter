@@ -1,4 +1,17 @@
+from django.conf import settings as django_settings
 from django.db import models
+
+# TODO: figure out where this lives (probably twitterro.django)
+def get_twitter(settings = None):
+    import twitterro
+    if not settings:
+        settings = django_settings
+    t = twitterro.Twitter()
+    t.add_credentials(
+        settings.TWITTER['USERNAME'],
+        settings.TWITTER['PASSWORD']
+    )
+    return t
 
 class TwitterUser(models.Model):
     id = models.CharField(max_length=200, primary_key=True)
@@ -36,6 +49,20 @@ class TwitterUser(models.Model):
 
     def follow(self, user):
         return Relationship.objects.create(source=self, target=user)
+
+    def update_from_twitter(self, twitter = None):
+        # TODO: test this
+        if not twitter:
+            twitter = get_twitter()
+
+        user = twitter.users.show(screen_name = self.screen_name)
+        values = user.api_data
+        del values["status"]
+        # TODO: add this back in once twitterro has them as proper date objects
+        del values["created_at"]
+
+        for k,v in values.iteritems():
+            self.__dict__[k] = v
 
     def __unicode__(self):
         return "%s [%s]" % (self.screen_name, self.id)
