@@ -55,7 +55,13 @@ class TwitterUser(models.Model):
         if not twitter:
             twitter = get_twitter()
 
-        user = twitter.users.show(screen_name = self.screen_name)
+        if self.id:
+            user = twitter.users.show(id=self.id)
+        else:
+            user = twitter.users.show(screen_name = self.screen_name)
+        # TODO: gracefully handle case where self.id nor self.screen_name are
+        #       present.
+
         values = user.api_data
         del values["status"]
         # TODO: add this back in once twitterro has them as proper date objects

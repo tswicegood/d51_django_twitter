@@ -104,3 +104,15 @@ class TestOfTwitterUser(TestCase):
         self.assertEqual(user.screen_name, tswicegood.screen_name)
         self.assertEqual(user.id, tswicegood.id)
 
+    def test_update_uses_id_if_present(self):
+        tswicegood = tswicegood_user()
+        twitter = mox.MockObject(twitterro.Twitter)
+        twitter.users = mox.MockObject(twitterro.User)
+        twitter.users.show(id=tswicegood.id).AndReturn(tswicegood)
+        replay_all(twitter, twitter.users)
+
+        user = TwitterUser(id=tswicegood.id)
+        user.update_from_twitter(twitter=twitter)
+        self.assertEqual(user.screen_name, tswicegood.screen_name)
+        self.assertEqual(user.id, tswicegood.id)
+
