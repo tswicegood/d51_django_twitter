@@ -116,3 +116,13 @@ class TestOfTwitterUser(TestCase):
         self.assertEqual(user.screen_name, tswicegood.screen_name)
         self.assertEqual(user.id, tswicegood.id)
 
+    def test_a_user_only_follows_once(self):
+        user_a = generate_random_user()
+        user_b = generate_random_user()
+
+        user_a.follow(user_b)
+        user_a.follow(user_b)
+        [u.save() for u in (user_a, user_b,)]
+
+        #import pdb;pdb.set_trace()
+        self.assertEqual(user_a.following.count(), 1)

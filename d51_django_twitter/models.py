@@ -48,7 +48,7 @@ class TwitterUser(models.Model):
     following = property(get_following)
 
     def follow(self, user):
-        return Relationship.objects.create(source=self, target=user)
+        return Relationship.objects.get_or_create(source=self, target=user)
 
     def update_from_twitter(self, twitter = None):
         # TODO: test this
