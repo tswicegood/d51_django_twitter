@@ -47,6 +47,11 @@ class TwitterUser(models.Model):
         return TwitterUser.objects.filter(follower_relationships__source = self)
     following = property(get_following)
 
+    def get_mutual_followers(self):
+        return TwitterUser.objects.filter(following_relationships__target = self,
+            follower_relationships__source = self)
+    mutual_followers = property(get_mutual_followers)
+
     def follow(self, user):
         return Relationship.objects.get_or_create(source=self, target=user)
 

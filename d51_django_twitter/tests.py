@@ -125,3 +125,21 @@ class TestOfTwitterUser(TestCase):
         [u.save() for u in (user_a, user_b,)]
 
         self.assertEqual(user_a.following.count(), 1)
+
+    def test_mutual_followers_returns_only_users_where_both_are_following_each_other(self):
+        user_a, user_b, user_c = generate_random_users(3)
+
+        user_a.follow(user_b)
+        user_a.follow(user_c)
+
+        user_b.follow(user_a)
+
+        [u.save() for u in (user_a, user_b, user_c)]
+
+        self.assertEqual(user_a.mutual_followers.count(), 1)
+        self.assertEqual(user_b.mutual_followers.count(), 1)
+        self.assertEqual(user_c.mutual_followers.count(), 0)
+
+        self.assert_(user_b in user_a.mutual_followers.all())
+        self.assert_(user_a in user_b.mutual_followers.all())
+
