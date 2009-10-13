@@ -124,5 +124,4 @@ class TestOfTwitterUser(TestCase):
         user_a.follow(user_b)
         [u.save() for u in (user_a, user_b,)]
 
-        #import pdb;pdb.set_trace()
         self.assertEqual(user_a.following.count(), 1)
